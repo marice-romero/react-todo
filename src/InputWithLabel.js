@@ -1,11 +1,6 @@
 import { useRef, useEffect } from "react";
 
-const InputWithLabel = ({
-  children,
-  todoTitle,
-  handleTitleChange,
-  isFocused,
-}) => {
+const InputWithLabel = ({ children, todoTitle, handleTitleChange }) => {
   const inputRef = useRef();
   useEffect(() => {
     if (inputRef.current) {

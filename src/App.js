@@ -23,14 +23,79 @@ function App() {
     });
   });
 
+  const fetchData = async () => {
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+      },
+    };
+
+    const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`;
+
+    try {
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      const todos = data.records.map((task) => {
+        const newTask = {
+          title: task.fields.title,
+          id: task.id,
+        };
+        return newTask;
+      });
+      setTodoList(todos);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     if (!isLoading) {
-      localStorage.setItem("savedTodoList", JSON.stringify(todoList));
+      fetchData();
     }
-  }, [isLoading, todoList]);
+  }, [isLoading]);
 
-  const addTodo = (newTodo) => {
-    setTodoList([...todoList, newTodo]);
+  // const addTodo = (newTodo) => {
+  //   setTodoList([...todoList, newTodo]);
+  // };
+
+  const addTodo = async (newTodo) => {
+    try {
+      const newTask = {
+        fields: {
+          title: newTodo,
+        },
+      };
+
+      const response = await fetch(
+        `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/Default`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+          },
+          body: JSON.stringify(newTask),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+
+      const dataResponse = await response.json();
+      console.log(dataResponse);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   };
 
   const removeTodo = (id) => {
