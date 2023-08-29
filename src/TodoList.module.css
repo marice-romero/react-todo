@@ -1,0 +1,16 @@
+.list {
+  color: #555;
+  font-size: 22px;
+  padding: 0 !important;
+  width: 500px;
+  border: 1px solid #dedede;
+}
+
+.lines {
+  border-left: 1px solid #ffaa9f;
+  border-right: 1px solid #ffaa9f;
+  width: 2px;
+  float: left;
+  height: 495px;
+  margin-left: 40px;
+}
