@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TodoList from "./TodoList.js";
 import AddTodoForm from "./AddTodoForm.js";
+import styles from "./App.module.css";
 
 function App() {
   const [todoList, setTodoList] = useState([]);
@@ -18,10 +19,15 @@ function App() {
           }),
         2000
       )
-    ).then((result) => {
-      setTodoList(result.data.todoList);
-      setIsLoading(false);
-    });
+    )
+      .then((result) => {
+        // setTodoList(result.data.todoList);
+        setIsLoading(false);
+      })
+      .catch((reject) => {
+        console.log("Catch block hit");
+        console.log(reject);
+      });
   });
 
   const fetchData = async () => {
@@ -78,7 +84,7 @@ function App() {
         <Route
           path="/"
           element={
-            <>
+            <div className={styles.paper}>
               <h1>Todo List</h1>
               <AddTodoForm onAddTodo={addTodo} />
               {isLoading ? (
@@ -86,7 +92,7 @@ function App() {
               ) : (
                 <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
               )}
-            </>
+            </div>
           }
         />
         <Route path="/new" element={<h1>New Todo List</h1>} />
