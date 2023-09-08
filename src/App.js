@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TodoList from "./TodoList.js";
 import AddTodoForm from "./AddTodoForm.js";
 
@@ -62,40 +63,8 @@ function App() {
     }
   }, [isLoading]);
 
-  // const addTodo = (newTodo) => {
-  //   setTodoList([...todoList, newTodo]);
-  // };
-
-  const addTodo = async (newTodo) => {
-    try {
-      const newTask = {
-        fields: {
-          title: newTodo,
-        },
-      };
-
-      const response = await fetch(
-        `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/Default`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
-          },
-          body: JSON.stringify(newTask),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
-      const dataResponse = await response.json();
-      console.log(dataResponse);
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
+  const addTodo = (newTodo) => {
+    setTodoList([...todoList, newTodo]);
   };
 
   const removeTodo = (id) => {
@@ -104,15 +73,25 @@ function App() {
   };
 
   return (
-    <>
-      <h1>Todo List</h1>
-      <AddTodoForm onAddTodo={addTodo} />
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
-      )}
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <h1>Todo List</h1>
+              <AddTodoForm onAddTodo={addTodo} />
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+              )}
+            </>
+          }
+        />
+        <Route path="/new" element={<h1>New Todo List</h1>} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
