@@ -1,9 +1,14 @@
 .list {
   color: #555;
-  font-size: 22px;
+  font-size: 1.5rem;
   padding: 0 !important;
-  width: 500px;
+  width: 615px;
   border: 1px solid #dedede;
+  width: 99%;
+}
+
+.listContainer {
+  position: relative;
 }
 
 .lines {
@@ -11,6 +16,21 @@
   border-right: 1px solid #ffaa9f;
   width: 2px;
   float: left;
-  height: 495px;
   margin-left: 40px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+@media (max-width: 500px) {
+  .list {
+    width: 99%;
+  }
+  .lines {
+    margin-left: 30px;
+  }
+}
+@media (min-width: 501px) and (max-width: 1000px) {
+}
+@media (min-width: 1001px) {
 }

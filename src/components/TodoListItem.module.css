@@ -1,15 +1,37 @@
 .ListItem {
   list-style: none;
   border-bottom: 1px dotted #ccc;
-  text-indent: 25px;
+  text-indent: 40px;
   height: auto;
   padding: 10px;
 }
 
 .ListItem:hover {
-  background-color: #f0f0f0;
+  background-color: #ece63d;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
   -ms-transition: all 0.2s;
   -o-transition: all 0.2s;
+}
+
+.buttonsContainer {
+  display: inline;
+}
+
+.editButton {
+  margin-left: 0.5rem;
+}
+
+.checkbox {
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 500px) {
+  .buttonsContainer {
+    display: block;
+  }
+}
+@media (min-width: 501px) and (max-width: 1000px) {
+}
+@media (min-width: 1001px) {
 }

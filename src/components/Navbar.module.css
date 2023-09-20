@@ -1,0 +1,91 @@
+.navbar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: #2ec4b6;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: 100%;
+}
+
+.navbar h5 {
+  grid-column: 1/2;
+  justify-self: start;
+  margin: 0;
+  padding: 1rem;
+  font-family: "Permanent Marker";
+  letter-spacing: 0.5rem;
+  font-size: 2.3rem;
+}
+
+.navlinks {
+  grid-column: 2/3;
+  justify-self: center;
+  font-size: 1.5rem;
+}
+
+.navlinks a {
+  text-decoration: none;
+  padding: 1.75rem;
+}
+
+.navlinks a:visited {
+  color: inherit;
+}
+
+.navlinks a:hover {
+  text-decoration: underline;
+}
+
+.streakCounter {
+  grid-column: 3/4;
+  font-size: 1.5rem;
+  justify-self: end;
+  padding-right: 1rem;
+}
+
+@media (max-width: 500px) {
+  .navbar {
+    grid-template-rows: 100px 70px;
+  }
+  .navbar h5 {
+    font-size: 1.5rem;
+  }
+  .navlinks {
+    margin-top: 0;
+    grid-column: 1/4;
+    grid-row: 2/3;
+  }
+  .navlinks a {
+    padding: 0.5rem;
+  }
+  .streakCounter {
+    grid-column: 2/4;
+    padding-right: 0.5rem;
+    text-align: center;
+  }
+}
+@media (min-width: 501px) and (max-width: 1000px) {
+  .navbar {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  .navbar h5 {
+    grid-column: 1/3;
+    grid-row: 1/3;
+    font-size: 2rem;
+  }
+  .navlinks {
+    grid-column: 2/5;
+    grid-row: 2/3;
+    justify-self: end;
+  }
+  .navlinks a {
+    padding: 1rem;
+  }
+  .streakCounter {
+    grid-column: 2/5;
+    grid-row: 1/2;
+  }
+}
+@media (min-width: 1001px) {
+}
