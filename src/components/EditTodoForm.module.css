@@ -7,3 +7,11 @@
   font-family: "Reenie Beanie";
   font-size: 1.5rem;
 }
+
+.editSubmit {
+  background-color: #2ec4b6;
+}
+
+.editSubmit:hover {
+  background-color: #06d6a0;
+}

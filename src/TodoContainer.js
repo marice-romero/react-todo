@@ -1,14 +1,9 @@
 import { useState, useEffect } from "react";
 import App from "./App";
-
-const todaysDate = new Date().toLocaleDateString();
-console.log(todaysDate);
+import { toast } from "react-toastify";
 
 const TodoContainer = () => {
-  const [todoList, setTodoList] = useState([]);
   const [masterList, setMasterList] = useState([]);
-  const [upcomingTodoList, setUpcomingTodoList] = useState([]);
-  const [pastDueList, setPastDueList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // useEffect(() => {
@@ -53,7 +48,7 @@ const TodoContainer = () => {
       );
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        toast.error(`error: ${response.status}`);
       }
 
       const data = await response.json();
@@ -82,6 +77,7 @@ const TodoContainer = () => {
       return todos;
     } catch (error) {
       console.log(error);
+      toast.error("something went wrong, please try again later");
     }
   };
 
@@ -91,21 +87,21 @@ const TodoContainer = () => {
     }
   }, [isLoading]);
 
-  useEffect(() => {
-    let todaysList = masterList.filter((task) => {
-      return task.deadline === todaysDate && task.completed !== true;
-    });
-    let upcomingList = masterList.filter((task) => {
-      return task.deadline > todaysDate && task.completed !== true;
-    });
-    let pastDueList = masterList.filter((task) => {
-      return task.deadline < todaysDate && task.completed !== true;
-    });
+  // useEffect(() => {
+  //   let todaysList = masterList.filter((task) => {
+  //     return task.deadline === todaysDate && task.completed !== true;
+  //   });
+  //   let upcomingList = masterList.filter((task) => {
+  //     return task.deadline > todaysDate && task.completed !== true;
+  //   });
+  //   let pastDueList = masterList.filter((task) => {
+  //     return task.deadline < todaysDate && task.completed !== true;
+  //   });
 
-    setTodoList(todaysList);
-    setUpcomingTodoList(upcomingList);
-    setPastDueList(pastDueList);
-  }, [masterList]);
+  //   setTodoList(masterList);
+  //   setUpcomingTodoList(upcomingList);
+  //   setPastDueList(pastDueList);
+  // }, [masterList]);
 
   const addTodo = async (newTodo) => {
     // setTodoList([...todoList, newTodo]);
@@ -131,14 +127,16 @@ const TodoContainer = () => {
         options
       );
 
-      if (!response.ok) {
-        throw new Error(`The following error has occurred: ${response.status}`);
+      if (response.ok) {
+        toast.success("task successfully added!");
+      } else {
+        toast.error(`error: ${response.status}`);
       }
 
       const dataResponse = await response.json();
 
-      setTodoList([
-        ...todoList,
+      setMasterList([
+        ...masterList,
         {
           title: newTodo.title,
           deadline: newTodo.deadline,
@@ -149,15 +147,13 @@ const TodoContainer = () => {
       return dataResponse;
     } catch (error) {
       console.log(error.message);
+      toast.error("something went wrong, please try again later");
       return null;
     }
   };
 
   const removeTodo = async (id) => {
     try {
-      const newTodoList = todoList.filter((todoItem) => id !== todoItem.id);
-      setTodoList(newTodoList);
-
       const options = {
         method: "DELETE",
         headers: {
@@ -171,15 +167,22 @@ const TodoContainer = () => {
         options
       );
       const data = await response.json();
+      if (response.status === 200) {
+        toast.success("task deleted!");
+        const newTodoList = masterList.filter((todoItem) => id !== todoItem.id);
+        setMasterList(newTodoList);
+      } else {
+        toast.error(`error: ${response.status}`);
+      }
       return data;
     } catch (error) {
       console.log(error);
+      toast.error("something went wrong, please try again later");
     }
   };
 
-  const editTodo = async (updatedTodo) => {
+  const editTodo = async (updatedTodo, type) => {
     try {
-      console.log(updatedTodo);
       const airtableData = {
         fields: {
           title: updatedTodo.title,
@@ -202,44 +205,52 @@ const TodoContainer = () => {
         options
       );
       const dataResponse = await response.json();
-      fetchData();
+      if (response.ok) {
+        fetchData();
+        if (type === "check") {
+          toast.success("task completed!");
+        } else {
+          toast.success("task edited!");
+        }
+      } else toast.error(`error: ${response.status}`);
 
       return dataResponse;
     } catch (error) {
       console.log(error);
+      toast.error("something went wrong, please try again later");
     }
   };
 
-  const sortTasks = (list, sortType, listName) => {
-    let sortedList = [];
+  const sortTasks = (list, sortType) => {
     if (sortType === "A-Z ascending") {
-      sortedList = list.sort((objectA, objectB) =>
+      list.sort((objectA, objectB) =>
         objectA.title <= objectB.title ? -1 : 1
       );
     }
     if (sortType === "A-Z descending") {
-      sortedList = list.sort((objectA, objectB) =>
+      list.sort((objectA, objectB) =>
         objectA.title <= objectB.title ? 1 : -1
       );
     }
-    if (listName === "todoList") {
-      setTodoList(sortedList);
-    }
-    if (listName === "upcomingList") {
-      setUpcomingTodoList(sortedList);
-    }
+    // if (listName === "todoList") {
+    //   setTodoList(sortedList);
+    // }
+    // if (listName === "upcomingList") {
+    //   setUpcomingTodoList(sortedList);
+    // }
   };
 
   return (
     <App
-      todoList={todoList}
-      upcomingTodoList={upcomingTodoList}
-      pastDueList={pastDueList}
+      // todoList={todoList}
+      // upcomingTodoList={upcomingTodoList}
+      // pastDueList={pastDueList}
       isLoading={isLoading}
       addTodo={addTodo}
       removeTodo={removeTodo}
       editTodo={editTodo}
       sortTasks={sortTasks}
+      masterList={masterList}
     />
   );
 };

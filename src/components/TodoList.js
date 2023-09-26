@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import TodoListItem from "./TodoListItem.js";
 import style from "./TodoList.module.css";
 
-function TodoList({ todoList, onRemoveTodo, onAddTodo, onEditTodo }) {
+function TodoList({ todoList, onRemoveTodo, onAddTodo, onEditTodo, view }) {
   return (
     <div className={style.listContainer}>
       <div className={style.lines}></div>
@@ -16,6 +16,7 @@ function TodoList({ todoList, onRemoveTodo, onAddTodo, onEditTodo }) {
               onRemoveTodo={onRemoveTodo}
               onAddTodo={onAddTodo}
               onEditTodo={onEditTodo}
+              view={view}
             />
           );
         })}

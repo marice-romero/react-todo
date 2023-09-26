@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import style from "./TodoListItem.module.css";
 import EditTodoForm from "./EditTodoForm";
 
-const TodoListItem = ({ toDoItem, onRemoveTodo, onEditTodo }) => {
+const TodoListItem = ({ toDoItem, onRemoveTodo, onEditTodo, view }) => {
   const [showForm, setShowForm] = useState(false);
   const [showEditButton, setShowEditButton] = useState(true);
 
@@ -14,8 +14,10 @@ const TodoListItem = ({ toDoItem, onRemoveTodo, onEditTodo }) => {
 
   const handleCheckbox = (event) => {
     toDoItem.completed = event.target.checked;
-    onEditTodo(toDoItem);
+    const type = "check";
+    onEditTodo(toDoItem, type);
   };
+
   return (
     <>
       <li className={style.ListItem}>
@@ -24,16 +26,21 @@ const TodoListItem = ({ toDoItem, onRemoveTodo, onEditTodo }) => {
           className={style.checkbox}
           onChange={handleCheckbox}
         ></input>
-        {toDoItem.title}
+        {toDoItem.title}{" "}
+        {view === "upcoming" && <span>due by {toDoItem.deadline}</span>}
         <div className={style.buttonsContainer}>
           {showEditButton && (
             <button onClick={handleTodoForm} className={style.editButton}>
               edit
             </button>
           )}
-          <button onClick={() => onRemoveTodo(toDoItem.id)}>delete</button>
+          <button
+            onClick={() => onRemoveTodo(toDoItem.id)}
+            className={style.deleteButton}
+          >
+            delete
+          </button>
         </div>
-
         <div>
           {showForm && (
             <EditTodoForm
