@@ -7,26 +7,42 @@ import styles from "./App.module.css";
 import PropTypes from "prop-types";
 
 function App({
-  todoList,
   isLoading,
   addTodo,
   removeTodo,
   editTodo,
-  upcomingTodoList,
   sortTasks,
-  pastDueList,
+  masterList,
 }) {
   const [sortType, setSortType] = useState("");
+
+  const date = new Date();
+
+  const year = date.toLocaleString("default", { year: "numeric" });
+  const month = date.toLocaleString("default", { month: "2-digit" });
+  const day = date.toLocaleString("default", { day: "2-digit" });
+
+  const todaysDate = year + "-" + month + "-" + day;
 
   const handleSortChange = (event, list) => {
     setSortType(event.target.value);
     sortTasks(list, event.target.value, event.target.name);
   };
 
+  const todoList = masterList.filter(
+    (todo) => !todo.completed && todo.deadline === todaysDate
+  );
+  const pastDueList = masterList.filter(
+    (todo) => !todo.completed && todo.deadline < todaysDate
+  );
+  const upcomingTodoList = masterList.filter(
+    (todo) => !todo.completed && todo.deadline > todaysDate
+  );
+
   return (
     <>
       <BrowserRouter>
-        <Navbar pastDueList={pastDueList} />
+        <Navbar masterList={masterList} todaysDate={todaysDate} />
 
         <Routes>
           <Route
@@ -109,6 +125,7 @@ function App({
                   onRemoveTodo={removeTodo}
                   onAddTodo={addTodo}
                   onEditTodo={editTodo}
+                  view="upcoming"
                 />
               )}
             </div>

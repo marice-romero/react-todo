@@ -46,7 +46,9 @@ const EditTodoForm = ({
         onChange={handleInputChange}
         className={style.editInput}
       ></input>
-      <button type="submit">submit</button>
+      <button className={style.editSubmit} type="submit">
+        submit
+      </button>
     </form>
   );
 };

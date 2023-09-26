@@ -3,7 +3,7 @@ import styles from "./Navbar.module.css";
 import StreakCounter from "./StreakCounter";
 import PropTypes from "prop-types";
 
-const Navbar = ({ pastDueList }) => {
+const Navbar = ({ masterList, todaysDate }) => {
   return (
     <div className={styles.navbar}>
       <h5>get sh*t done</h5>
@@ -14,7 +14,7 @@ const Navbar = ({ pastDueList }) => {
         <Link to="/add">add sh*t</Link>
       </div>
       <div className={styles.streakCounter}>
-        <StreakCounter pastDueList={pastDueList} />
+        <StreakCounter masterList={masterList} todaysDate={todaysDate} />
       </div>
     </div>
   );
