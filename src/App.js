@@ -1,104 +1,137 @@
-import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from "react";
+import Navbar from "./components/Navbar.js";
 import TodoList from "./components/TodoList.js";
 import AddTodoForm from "./components/AddTodoForm.js";
 import styles from "./App.module.css";
+import PropTypes from "prop-types";
 
-function App() {
-  const [todoList, setTodoList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+function App({
+  todoList,
+  isLoading,
+  addTodo,
+  removeTodo,
+  editTodo,
+  upcomingTodoList,
+  sortTasks,
+  pastDueList,
+}) {
+  const [sortType, setSortType] = useState("");
 
-  useEffect(() => {
-    new Promise((resolve, reject) =>
-      setTimeout(
-        () =>
-          resolve({
-            data: {
-              todoList: JSON.parse(localStorage.getItem("savedTodoList")) || [],
-            },
-          }),
-        2000
-      )
-    )
-      .then((result) => {
-        // setTodoList(result.data.todoList);
-        setIsLoading(false);
-      })
-      .catch((reject) => {
-        console.log("Catch block hit");
-        console.log(reject);
-      });
-  });
-
-  const fetchData = async () => {
-    const options = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
-      },
-    };
-
-    const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`;
-
-    try {
-      const response = await fetch(url, options);
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      const todos = data.records.map((task) => {
-        const newTask = {
-          title: task.fields.title,
-          id: task.id,
-        };
-        return newTask;
-      });
-      setTodoList(todos);
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (!isLoading) {
-      fetchData();
-    }
-  }, [isLoading]);
-
-  const addTodo = (newTodo) => {
-    setTodoList([...todoList, newTodo]);
-  };
-
-  const removeTodo = (id) => {
-    const newTodoList = todoList.filter((todoItem) => id !== todoItem.id);
-    setTodoList(newTodoList);
+  const handleSortChange = (event, list) => {
+    setSortType(event.target.value);
+    sortTasks(list, event.target.value, event.target.name);
   };
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div className={styles.paper}>
-              <h1>Todo List</h1>
-              <AddTodoForm onAddTodo={addTodo} />
+    <>
+      <BrowserRouter>
+        <Navbar pastDueList={pastDueList} />
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <div className={styles.paper}>
+                  <h1>get this sh*t done today</h1>
+                  <div className={styles.sort}>
+                    <span>sort by</span>
+                    <select
+                      value={sortType}
+                      onChange={(e) => handleSortChange(e, todoList)}
+                      name="todoList"
+                    >
+                      <option value="A-Z ascending">A-Z ascending</option>
+                      <option value="A-Z descending">A-Z descending</option>
+                    </select>
+                  </div>
+                  {isLoading ? (
+                    <p className={styles.loading}>Loading...</p>
+                  ) : (
+                    <TodoList
+                      todoList={todoList}
+                      onRemoveTodo={removeTodo}
+                      onAddTodo={addTodo}
+                      onEditTodo={editTodo}
+                    />
+                  )}
+                </div>
+                {pastDueList.length > 0 && (
+                  <div className={styles.paper}>
+                    <h1>this sh*t is overdue</h1>
+                    <div className={styles.sort}>
+                      <span>sort by</span>
+                      <select
+                        value={sortType}
+                        onChange={(e) => handleSortChange(e, pastDueList)}
+                        name="pastDueList"
+                      >
+                        <option value="A-Z ascending">A-Z ascending</option>
+                        <option value="A-Z descending">A-Z descending</option>
+                      </select>
+                    </div>
+                    {isLoading ? (
+                      <p className={styles.loading}>Loading...</p>
+                    ) : (
+                      <TodoList
+                        todoList={pastDueList}
+                        onRemoveTodo={removeTodo}
+                        onAddTodo={addTodo}
+                        onEditTodo={editTodo}
+                      />
+                    )}
+                  </div>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/upcoming"
+            element=<div className={styles.paper}>
+              <h1>get this sh*t done later</h1>
+              <div className={styles.sort}>
+                <span>sort by</span>
+                <select
+                  value={sortType}
+                  name="upcomingSort"
+                  onChange={(e) => handleSortChange(e, upcomingTodoList)}
+                >
+                  <option value="A-Z ascending">A-Z ascending</option>
+                  <option value="A-Z descending">A-Z descending</option>
+                </select>
+              </div>
               {isLoading ? (
-                <p>Loading...</p>
+                <p className={styles.loading}>Loading...</p>
               ) : (
-                <TodoList todoList={todoList} onRemoveTodo={removeTodo} />
+                <TodoList
+                  todoList={upcomingTodoList}
+                  onRemoveTodo={removeTodo}
+                  onAddTodo={addTodo}
+                  onEditTodo={editTodo}
+                />
               )}
             </div>
-          }
-        />
-        <Route path="/new" element={<h1>New Todo List</h1>} />
-      </Routes>
-    </BrowserRouter>
+          />
+          <Route
+            path="/add"
+            element={<AddTodoForm onAddTodo={addTodo} buttonType={"add"} />}
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
+
+App.propTypes = {
+  todoList: PropTypes.array,
+  isLoading: PropTypes.bool,
+  addTodo: PropTypes.func,
+  removeTodo: PropTypes.func,
+  editTodo: PropTypes.func,
+  upcomingTodoList: PropTypes.array,
+  sortTasks: PropTypes.func,
+  pastDueList: PropTypes.array,
+};
 
 export default App;

@@ -1,7 +1,8 @@
 import { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import style from "./AddTodoForm.module.css";
 
-const InputWithLabel = ({ children, todoTitle, handleTitleChange }) => {
+const InputWithLabel = ({ children, todoType, value, handleInputChange }) => {
   const inputRef = useRef();
   useEffect(() => {
     if (inputRef.current) {
@@ -11,13 +12,15 @@ const InputWithLabel = ({ children, todoTitle, handleTitleChange }) => {
 
   return (
     <>
-      <label htmlFor="todoTitle">{children} </label>
+      <label htmlFor={todoType}>{children} </label>
       <input
         ref={inputRef}
-        id="todoTitle"
-        name="title"
-        value={todoTitle}
-        onChange={handleTitleChange}
+        id={todoType}
+        name={todoType}
+        type="text"
+        value={value}
+        onChange={handleInputChange}
+        className={style.formInput}
       ></input>
     </>
   );
@@ -25,8 +28,9 @@ const InputWithLabel = ({ children, todoTitle, handleTitleChange }) => {
 
 InputWithLabel.propTypes = {
   children: PropTypes.string,
-  todoTitle: PropTypes.string,
-  handleTitleChange: PropTypes.func,
+  todoType: PropTypes.string,
+  value: PropTypes.string,
+  handleInputChange: PropTypes.func,
 };
 
 export default InputWithLabel;
