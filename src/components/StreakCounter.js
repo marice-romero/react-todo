@@ -16,19 +16,10 @@ const StreakCounter = ({ pastDueList }) => {
     }
   }, [pastDueList]);
 
-  if (streak === 1) {
-    return (
-      <span>
-        <FontAwesomeIcon icon={faFire} style={{ color: "white" }} /> {}getting
-        sh*t done for {streak} day
-      </span>
-    );
-  }
-
   return (
     <span>
       <FontAwesomeIcon icon={faFire} style={{ color: "white" }} /> {}getting
-      sh*t done for {streak} days
+      sh*t done for {streak} {streak === 1 ? "day" : "days"}
     </span>
   );
 };

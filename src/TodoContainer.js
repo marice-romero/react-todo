@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import App from "./App";
 
-const todaysDate = new Date().toISOString().split("T")[0];
-// ;
-// const day = new Date().getDay();
+const todaysDate = new Date().toLocaleDateString();
+console.log(todaysDate);
 
 const TodoContainer = () => {
   const [todoList, setTodoList] = useState([]);
@@ -212,38 +211,22 @@ const TodoContainer = () => {
   };
 
   const sortTasks = (list, sortType, listName) => {
+    let sortedList = [];
     if (sortType === "A-Z ascending") {
-      const sortedList = list.sort((objectA, objectB) => {
-        if (objectA.title < objectB.title) {
-          return -1;
-        }
-        if (objectA.title > objectB.title) {
-          return 1;
-        }
-
-        return 0;
-      });
-      if (listName === "todoList") {
-        setTodoList(sortedList);
-      }
-      if (listName === "upcomingList") {
-        setUpcomingTodoList(sortedList);
-      }
+      sortedList = list.sort((objectA, objectB) =>
+        objectA.title <= objectB.title ? -1 : 1
+      );
     }
     if (sortType === "A-Z descending") {
-      const sortedList = list.sort((objectA, objectB) => {
-        if (objectA.title < objectB.title) {
-          return 1;
-        }
-        if (objectA.title > objectB.title) {
-          return -1;
-        }
-
-        return 0;
-      });
-      if (listName === "upcomingList") {
-        setUpcomingTodoList(sortedList);
-      }
+      sortedList = list.sort((objectA, objectB) =>
+        objectA.title <= objectB.title ? 1 : -1
+      );
+    }
+    if (listName === "todoList") {
+      setTodoList(sortedList);
+    }
+    if (listName === "upcomingList") {
+      setUpcomingTodoList(sortedList);
     }
   };
 
